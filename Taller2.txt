@@ -1,0 +1,294 @@
+#include <iostream>
+#include <iomanip>
+#include <algorithm>
+using namespace std;
+
+const int mag = 3;  //De la linea 6 a la 46 son las funcoones que hacen parte del ejercicio #7
+
+void mostrarTablero(char tablero[mag][mag]){
+    
+    cout<<"\n";
+    for(int i=0;i<mag;i++){
+        for(int j=0;j<mag;j++){
+            cout<<tablero[i][j];
+            if (j<mag- 1)cout<< " | ";
+        }
+        cout<<"\n";
+        if (i<mag- 1)cout<<"--+---+--\n";
+    }
+    cout<<"\n";
+}
+
+bool hayGanador(char tablero[mag][mag], char jugador) {
+    // Revisa filas y columnas
+    for (int i=0;i<mag;i++){
+        if ((tablero[i][0]==jugador&&tablero[i][1]==jugador&&tablero[i][2]==jugador) ||
+            (tablero[0][i]==jugador&&tablero[1][i]==jugador&&tablero[2][i]==jugador))
+            return true;
+    }
+
+    // Revisa diagonales
+    if ((tablero[0][0]==jugador&&tablero[1][1]==jugador&&tablero[2][2]==jugador) ||
+        (tablero[0][2]==jugador&&tablero[1][1]==jugador&&tablero[2][0]==jugador))
+        return true;
+
+    return false;
+}
+
+bool tableroLleno(char tablero[mag][mag]){
+    for (int i=0;i<mag;i++){
+        for (int j=0;j<mag;j++){
+            if (tablero[i][j]== ' ')
+                return false;
+        }
+    }
+    return true;
+}
+
+int main()
+{
+    int n, aux;
+    cout<< "Ejercicio #1\n";
+    cout<<"Ingrese el numero de elementos que desee tener: ";
+    cin>>n;
+    int array[n];
+    
+    for(int i=0; i<n;i++)
+    {
+        cout<<"Ingrese el elemento ["<<i<<"] :";
+        cin>>array[i];
+    }
+    //metodo burbuja 
+    
+    for(int i=0;i<n;i++)
+    {
+        for(int j=0; j<n-1; j++)
+        {
+            if (array[j]> array [j+1])
+            {
+                aux = array [j] ;
+                array[j] = array [j+1];
+                array[j+1] = aux;
+            }
+        }
+    }
+    cout<< "\n Arreglo ordenado de manera ascendente"<<endl;
+        for (int i=0; i<n; i++)
+        {
+            cout<<array[i]<<" ";
+        }
+    cout<< "\n La mediana es: ";    
+    if (n%2 != 0) //Impar
+        cout<<array[n/2]<<endl;
+    else //par  
+       cout <<(array[n/2] + array[(n/2) - 1]) * 1.0 /2<<endl;
+       cout << "\n";
+       
+       
+    // Ejercicio #2 
+    cout<< "Ejercicio #2\n";
+    int numeros[]={1,2,3,4,5,6,7,8,9,10}; // Arreglo ordenado
+    int buscar=9;
+    int ini=0;
+    int fin=9;
+    int med;
+
+    while (ini<= fin){
+        med =(ini + fin)/2;
+
+        if(numeros[med] == buscar){
+            cout<< "El numero ha sido encontrado en la posición: "<<med<<endl;
+        
+        }
+
+        if(numeros[med]<buscar){
+            ini=med+1;
+        } else {
+            fin=med-1;
+        }
+    }
+
+    cout<<"El numero NO ha sido encontrado"<<endl;
+    cout << "\n";
+
+    
+    //Ejercicio #3 
+    cout<< "Ejercicio #3\n";
+    int num [3][3];
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            cout<<"Digite un numero ["<<i<<"]["<<j<<"]: ";
+            cin>>num[i][j];
+        }
+    }
+    cout<<"Matriz Original\n";
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            cout<<num[i][j]<<" ";
+        }
+        cout<<"\n";
+        
+    }
+    cout<<"\nMatriz Transpuesta\n";
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            cout<<num[j][i]<<" ";
+        }
+        cout<<"\n";}
+        
+    //Ejercicio #4 
+    cout<<"Ejercicio #4\n";
+    const int maxProductos = 5;
+
+    string nombres[maxProductos];
+    int cantidades[maxProductos];
+    float precios[maxProductos];
+    int total = 0;
+
+    int opcion;
+
+    do {
+        cout << "\nMENÚ DE INVENTARIO\n";
+        cout << "1. Añade un producto\n";
+        cout << "2. Ver el inventario\n";
+        cout << "3. Salir\n";
+        cout << "elija una opción: ";
+        cin >> opcion;
+
+        if (opcion==1){
+            if (total>=maxProductos){
+                cout << "Inventario lleno, No se pueden agregar más productos al Inventario.\n";
+            }else{
+                cout <<"Ingrese el nombre del producto: ";
+                cin.ignore(); //  Esto limpia el salto de la línea pendiente
+                getline(cin,nombres[total]);
+
+                cout<<"Ingrese la cantidad del producto: ";
+                cin>> cantidades[total];
+
+                cout<<"Ingrese el precio del producto: ";
+                cin>>precios[total];
+
+                total++;
+                cout<<"Producto agregado exitosamente.\n";
+            }
+        }
+
+        else if(opcion==2){
+            if(total==0){
+                cout<<"El inventario está vacío.\n";
+            }else{
+                cout<<"INVENTARIO\n";
+                for(int i=0;i<total;i++){
+                    cout<<i+1<<". "<<nombres[i]
+                         <<" | Cantidad: "<<cantidades[i]
+                         <<"| Precio: $"<<precios[i]<< "\n";
+                }
+            }
+        }
+
+        else if(opcion==3){
+            cout<<"\n";
+        }
+
+        else {
+            cout<<"Opción no válida. Intente de nuevo.\n";
+        }
+
+    } while(opcion != 3);
+    
+    
+    //Ejercicio #5 
+    cout << "Ejercicio #5\n";
+    int nume[] = {20, 53, 90, 71, 27, 45, 32, 89, 16, 44};
+    for(int i = 0; i<10; i++){
+        int min = i;
+        for(int j = i+1; j<10; j++){
+            if(nume[j]<nume[min]){
+                min = j;
+            }
+        }
+        int aux = nume[i];
+        nume[i]= nume[min];
+        nume[min]= aux;
+    }
+    
+    cout<<"Ordenamiento por seleccion, forma ascendente: ";
+    for(int i = 0; i<10; i++){
+        cout<<nume[i]<<" ";
+    }cout<<"\n";
+    
+    
+    //Ejercicio #6 
+    cout << "Ejercico #6:\n";
+    
+    int arr[] = {33,75,48,21,69,70,22,33,57,11,75};
+    int nu = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Elementos duplicados:\n";
+    for (int i = 0; i < nu; i++) {
+        for (int j = i + 1; j < nu; j++) {
+            if (arr[i] == arr[j]) {
+                cout << arr[i] << " ";
+                break; // Evita imprimir el mismo duplicado más de una vez
+            }
+        
+        }
+    }cout<<"\n";  
+    
+    //Ejercicio #7 
+   
+    char tablero[mag][mag];
+
+    // Inicia los recuadros con espacios vacíos
+    for (int i=0;i<mag;i++){
+        for (int j=0;j<mag;j++){
+            tablero[i][j]=' ';
+        }
+    }
+
+    char jugador= 'X';
+    int fila, columna;
+    bool juegoTerminado=false;
+    
+    cout<<"Ejercicio #7";
+    cout<<"\n";
+    cout <<"Bienvenido al juego TRIKI\n";
+
+    while (!juegoTerminado){
+        mostrarTablero(tablero);
+
+        // Acá pide el movimiento del usuario
+        cout<<"Turno del jugador "<<jugador<<endl;
+        cout<<"Ingrese fila (0-2): ";
+        cin>>fila;
+        cout<<"Ingrese columna (0-2): ";
+        cin>>columna;
+
+        // Verifica si el recuadro está vacío
+        if(fila < 0 ||fila>=mag||columna<0||columna>=mag||tablero[fila][columna] != ' ') {
+            cout<<"Movimiento inválido. Intente de nuevo.\n";
+            continue;
+        }
+
+        // Coloca la ficha
+        tablero[fila][columna]=jugador;
+
+        // Verifica si hay ganador
+        if (hayGanador(tablero,jugador)){
+            mostrarTablero(tablero);
+            cout<<"¡El jugador "<<jugador<< " ha ganado!\n";
+            juegoTerminado = true;
+        }
+        // Verifica si hay empate
+        else if(tableroLleno(tablero)){
+            mostrarTablero(tablero);
+            cout<< "¡Empate! No se pueden hacer mas movimientos.\n";
+            juegoTerminado=true;
+        }
+        // Cambiar de jugador
+        else {
+            jugador = (jugador == 'X') ? 'O' : 'X';
+        }
+    }
+}
