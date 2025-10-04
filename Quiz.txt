@@ -1,0 +1,141 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+    //Ejercicio 1.1
+    int numeroEntero = 17;
+    float numeroFlotante = 3.1416;
+    char caracter = 'O';
+
+    cout << "Valor del entero: "<< numeroEntero<<endl;
+    cout << "Valor del flotante: " <<numeroFlotante <<endl;
+    cout << "Valor del caracter: "<< caracter<<endl;
+    
+    //Ejercicio 1.2
+    // Diferencias:
+    //La diferencia en el tipo de dato int, quiere decir que la variable solo podra leer valores enteros
+    //Ejemplo: 1,2,3,56,777 etc.. este es recomendable usar en edades, valores enteros
+    // La diferencia entre un tipo de dato float quiere decir que la variable solo tomara valores decimales
+    //Ejemplo: 3.1416, 6.321 etc.. este es recomendable usar cuando hay medidas, calculos con divisiones
+    //La diferencia en el tipo de dato char es que aca nosotros decidimos cuantos caracteres tendra la variable
+    //este es recomendable usar cuando vas a usar caracteres individuales
+    
+    //Ejercicio 2.1
+    
+    int n1,n2, suma=0, resta=0, mult=0, divi=0; //Definimos las variables
+    cout<<"Ingrese el primer numero: ";cin>>n1;
+    cout<<"Ingrese el segundo numero: ";cin>>n2;
+    
+    //Aca vamos a operar 
+    suma=n1+n2;
+    resta=n1-n2;
+    mult=n1*n2;
+    divi=n1/n2;
+    
+    //Mostramos los resultados
+    cout<<"\n La Suma es: "<<suma<<endl;
+    cout<<"\n La resta es: "<<resta<<endl;
+    cout<<"\n La multiplicacion es: "<<mult<<endl;
+    cout<<"\n La division es: "<<divi<<endl;
+    
+    //Ejercicio 2.2 
+    int a = 5;
+    int b = 10;
+
+    // Aca usamos "=="
+    if (a == b) {
+        cout << "a es igual a b" << endl;
+    } else {
+        cout << "a no es igual a b" << endl;  //imprimimos
+    }
+
+    //aca usamos "!="
+    if (a != b) {
+        cout << "a es diferente de b" << endl;  //imprimimos 
+    } else {
+        cout << "a no es diferente de b" << endl;
+    }
+    
+    //Ejercicio 2.3 
+    //&& "AND"
+    //Devuelve verdadero solo si ambas condiciones son verdaderas
+    //Ejemplo: (condicion1 && condicion2) es true si condicion1 y condicion2 son verdaderas
+    //|| "OR"
+    //Devuelve verdad si al menos una de las condiciones es verdadera
+    //Ejemplo: (condicion1 || condicion2) es true si condicion1 o condicion2 es verdadera
+    //! "NOT"
+    //Invierte el valor lógico de una condición
+    //Si la condición es verdad, !condición será false, y viceversa
+    cout<<"\n";
+    
+    //Ejercicio 3.1 
+    
+    int edad;
+
+    cout<<"Ingrese la edad: ";
+    cin>>edad;
+
+    if(edad>=18){
+        cout<<"Eres mayor de edad" <<endl;
+    }else{
+        cout<<"Eres menor de edad"<< endl;
+    }
+    cout<<"\n";
+    
+    
+    //Ejercicio 3.2 
+    //La estructura else if, nos ayuda a determinar si algo se cumple o no, por Ejemplo
+    //en el caso anterior nos ayuda a saber si la persona es mayor o menor, entonces el if
+    //tomaria la edad y dice que si la edad es mayor o igual a 18, si esto se cumple entonces 
+    //ya imprimiriamos si es o no mayor de edad, pero si esta funcion no se cumple, entonces
+    //pasaria al else que seria "de lo contrario"
+    
+    
+    //Ejercicio 4.1 bucle for, imprime del 1 al 10
+    for (int i =1; i <=10;i++){
+        cout<<i<< endl;
+    }
+    cout<<"\n"; 
+    
+    
+    //Ejercicio 4.2 bucle white, aca decrementa, empieza en 10 hasta 1 
+     int i = 10;
+
+    while(i >=1){
+        cout<< i<<endl;
+        i--; //decrementa de 1 en 1
+    }
+    cout<<"\n";
+
+    //Ejercicio 4.3 
+    int t = 2;  //empezamos desde el numero par 2
+
+    do{
+        cout<< t <<endl;
+        t +=2; //Aca sumamos 2 para ir al siguiente numero par
+    }while (t<= 20);
+    
+    cout<<"\n";
+    
+    
+    //Ejercicio 5.1 
+    int numeros[5];
+
+    // Pediremos al usuario que ingrese los valores
+    for (int i = 0; i < 5; i++) {
+        cout << "Dame el valor para el elemento " << i << ": ";
+        cin >> numeros[i];
+    }
+
+    // Aca Imprimimos los valores del array
+    cout<<"Los valores ingresados son:"<< endl;
+    for(int i= 0; i <5; i++){
+        cout <<"Elemento "<< i << ": "<< numeros[i]<<endl;
+    }
+    
+    cout<<"\n";
+    
+    //Ejercicio 5.2
+    //Un array bidimensional es una estructura que es como una matriz, que contiene filas y columnas
+    // para acceder a sus elementos son por dos indicices ejemplo i-j 
