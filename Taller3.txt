@@ -1,0 +1,566 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <cmath>
+using namespace std;
+
+// FUNCION EJERCICIO 1
+struct Producto{
+    string nombre;
+    double precio =0.0;
+    int stock = 0;
+
+    
+    Producto(string n,double p =0.0, int s = 0)
+        : nombre(n), precio(p), stock(s){}  
+};
+
+// FUNCION EJERCICIO 2
+// Estructura del producto
+struct producto{
+    string nombre;
+    double precio =0.0;
+    int stock = 0;
+
+    // Constructor
+    producto(string n,double p = 0.0,int s = 0)
+        : nombre(n), precio(p), stock(s) {}
+
+    // Acá verifica si hay unidades disponibles
+    bool disponible()const{
+        return stock >0;
+    }
+
+    bool esValido() const{
+        return(precio >= 0.0 && !nombre.empty());
+    }
+};
+
+
+//FUNCION EJERCICIO 3
+struct Prod{
+    string nombre;
+    double precio =0.0;
+    int stock =0;
+
+    Prod(string n, double p = 0.0, int s = 0)
+        :nombre(n), precio(p), stock(s){}
+
+    bool operator==(const Prod& otro)const {
+        string a =nombre;
+        string b= otro.nombre;
+
+        transform(a.begin(), a.end(), a.begin(), ::tolower);
+        transform(b.begin(), b.end(), b.begin(), ::tolower);
+
+        return a==b;
+    }
+
+    
+    bool operator<(const Prod& otro) const{
+        if (precio== otro.precio)
+            return nombre <otro.nombre; 
+        return precio <otro.precio;
+    }
+};
+
+//FUNCION EJERCICIO 4
+struct Polinomio{
+    vector<double>coeficientes;
+
+    Polinomio(){}
+
+    Polinomio(vector<double> c){
+        coeficientes= c;
+    }
+
+    void mostrar() const {
+        cout << "P(x) = ";
+        for (int i = coeficientes.size() - 1; i >= 0; i--){
+            cout << coeficientes[i];
+            if (i> 0)cout << "x^" << i<< " + ";
+        }
+        cout<<endl;
+    }
+
+    double evaluar(double x)const {
+        double resultado =0.0;
+        for (int i = 0; i< coeficientes.size(); i++){
+            resultado += coeficientes[i] * pow(x, i);
+        }
+        return resultado;
+    }
+};
+
+
+//FUNCIONES EJERCICIO 5
+struct Produ{
+    string nombre;
+    double precio = 0.0;
+    int stock =0;
+
+    Produ(string n, double p, int s)
+        :nombre(n), precio(p), stock(s) {}
+};
+
+
+
+// Mostramos todos los productos del inventario
+void mostrarInventario(const vector<Produ>& inventario) {
+    cout << "\n Inventario actual:\n";
+    if (inventario.empty()) {
+        cout <<"(Vacío)\n";
+        return;
+    }
+
+    for (const auto& p : inventario) {
+        cout << "- " << p.nombre << " | Precio: $" << p.precio
+             << " | Stock: " << p.stock << endl;
+    }
+}
+
+int buscarProdu(const vector<Produ>& inventario, const string& nombreBuscado) {
+    string buscado = nombreBuscado;
+    transform(buscado.begin(), buscado.end(), buscado.begin(), ::tolower);
+
+    for (int i = 0; i <inventario.size();i++) {
+        string actual =inventario[i].nombre;
+        transform(actual.begin(), actual.end(), actual.begin(), ::tolower);
+        if (actual ==buscado)
+            return i;
+    }
+    return -1; // no encontrado
+}
+
+// Este nos ayuda a encontrar un producto nuevo
+void agregarProdu(vector<Produ>& inventario) {
+    string nombre;
+    double precio;
+    int stock;
+
+    cout << "\nNombre del producto: ";
+    getline(cin, nombre);
+    cout << "Precio: ";
+    cin >> precio;
+    cout << "Stock: ";
+    cin >>stock;
+    cin.ignore();
+
+    inventario.push_back(Produ(nombre,precio,stock));
+    cout <<"Producto agregado exitosamente.\n";
+}
+
+void modificarProdu(vector<Produ>& inventario) {
+    string nombre;
+    cout << "\nIngrese el nombre del producto a modificar: ";
+    getline(cin,nombre);
+
+    int pos =buscarProdu(inventario, nombre);
+    if (pos == -1) {
+        cout << "Producto no encontrado.\n";
+        return;
+    }
+
+    cout << "Nuevo precio: ";
+    cin >> inventario[pos].precio;
+    cout << "Nuevo stock: ";
+    cin >> inventario[pos].stock;
+    cin.ignore();
+
+    cout <<"Producto actualizado.\n";
+}
+
+// Eliminar un producto del inventario
+void eliminarProdu(vector<Produ>& inventario){
+    string nombre;
+    cout << "\nIngrese el nombre del producto a eliminar: ";
+    getline(cin,nombre);
+
+    int pos =buscarProdu(inventario, nombre);
+    if (pos ==-1){
+        cout << "Producto no encontrado.\n";
+        return;
+    }
+
+    inventario.erase(inventario.begin() + pos);
+    cout <<"️ Producto eliminado.\n";
+}
+
+//FUNCIONES EJERCICIO 6 
+// Función para calcular el máximo común divisor
+int mcd(int a,int b){
+    while(b != 0){
+        int temp =b;
+        b =a %b;
+        a=temp;
+    }
+    return a;
+}
+
+// Estructura para representar una fracción
+struct Fraccion {
+    int numerador;
+    int denominador;
+
+    // Constructor
+    Fraccion(int n = 0,int d=1){
+        numerador = n;
+        if (d ==0){ // evitamos división por cero
+            cout << "Denominador no puede ser 0. Se usa 1 por defecto.\n";
+            denominador= 1;
+        } else{
+            denominador =d;
+        }
+        simplificar();
+    }
+
+    void simplificar() {
+        int divisor= mcd(abs(numerador), abs(denominador));
+        numerador /=divisor;
+        denominador/= divisor;
+        // Si el denominador es negativo, lo cambiamos a positivo
+        if (denominador < 0) {
+            numerador = -numerador;
+            denominador = -denominador;
+        }
+    }
+
+    void mostrar() const{
+        cout <<numerador<< "/"<< denominador<< endl;
+    }
+
+    Fraccion sumar(const Fraccion& otra)const {
+        int n =numerador *otra.denominador +otra.numerador *denominador;
+        int d= denominador *otra.denominador;
+        return Fraccion(n, d);
+    }
+
+
+    Fraccion restar(const Fraccion& otra)const {
+        int n=numerador *otra.denominador -otra.numerador *denominador;
+        int d =denominador *otra.denominador;
+        return Fraccion(n,d); // se simplifica automáticamente
+    }
+};
+
+//FUNCIONES EJERCICIO 7
+
+struct Contacto {
+    string nombre;
+    string telefono;
+    string correo;
+
+    Contacto(string n,string t,string c)
+        :nombre(n), telefono(t), correo(c){}
+};
+
+// Función para mostrar todos los contactos
+void mostrarContactos(const vector<Contacto>& agenda){
+    cout<< "\nContactos:\n";
+    if (agenda.empty()){
+        cout<<"(Vacío)\n";
+        return;
+    }
+    for (const auto& c : agenda){
+        cout << "- " << c.nombre <<" | Tel: " <<c.telefono
+            << " | Correo: "<< c.correo <<endl;
+    }
+}
+
+
+int buscarContacto(const vector<Contacto>& agenda, const string& nombreBuscado) {
+    string buscado = nombreBuscado;
+    transform(buscado.begin(), buscado.end(), buscado.begin(), ::tolower);
+
+    for (int i = 0; i < agenda.size(); i++) {
+        string actual = agenda[i].nombre;
+        transform(actual.begin(), actual.end(), actual.begin(), ::tolower);
+        if (actual == buscado)
+            return i;
+    }
+    return -1; // no encontrado
+}
+
+// Agregar un contacto
+void agregarContacto(vector<Contacto>& agenda) {
+    string nombre,telefono,correo;
+    cout <<"\nNombre: ";
+    getline(cin, nombre);
+    cout<< "Teléfono: ";
+    getline(cin, telefono);
+    cout <<"Correo: ";
+    getline (cin, correo);
+
+    agenda.push_back(Contacto(nombre, telefono, correo));
+    cout << "Contacto agregado.\n";
+}
+
+// Eliminar un contacto
+void eliminarContacto(vector<Contacto>& agenda){
+    string nombre;
+    cout<<"\nIngrese el nombre del contacto a eliminar: ";
+    getline(cin,nombre);
+
+    int pos=buscarContacto(agenda,nombre);
+    if (pos == -1){
+        cout<< "Contacto no encontrado.\n";
+        return;
+    }
+
+    agenda.erase(agenda.begin() + pos);
+    cout <<" Contacto eliminado.\n";
+}
+
+
+
+
+int main() {
+    //EJERCICIO 1
+
+    // Creamos tres productos de distintas formas, personalizados
+
+    // 1 Solo nombre (usa los valores por defecto)
+    Producto prod1("Café de Otoño", 15.99,10);
+
+    // 2 Nombre precio y stock
+    Producto prod2("Vela aromática", 7.99,34);
+
+    // 3 Nombre, precio y stock
+    Producto prod3("Cuaderno artesanal", 12.50, 25);
+
+    // Mostramos los productos
+    cout<<"EJERCICIO 1 ";
+    cout<<"\n";
+    cout << "Producto 1 -> Nombre: " << prod1.nombre
+        << ", Precio: $"<<prod1.precio
+        << ", Stock: " << prod1.stock <<endl;
+
+    cout<<"Producto 2 -> Nombre: "<< prod2.nombre
+         << ", Precio: $" <<prod2.precio
+        << ", Stock: "<<prod2.stock<< endl;
+
+    cout <<"Producto 3 -> Nombre: "<<prod3.nombre
+        << ",Precio: $"<<prod3.precio
+         << ",Stock: " << prod3.stock << endl;
+
+    cout<<"\n";
+    
+    
+    
+    //EJERCICIO 2
+    // Creamos un vector con varios productos
+    vector<producto> lista = {
+        {"Taza del multiverso", 12.5, 10},
+        {"Poster sin nombre", 5.0, 0},
+        {"", 8.0, 4},               
+        {"Pulsera cósmica", -3.0, 8}, 
+        {"Llavero interestelar", 4.5, 5}
+    };
+
+    // Mostramos la lista original
+    cout<<"EJERCICIO 2";
+    cout<< "\n";
+    cout << "Productos antes del filtrado:\n";
+    for (const auto& p : lista) {
+        cout<< "- " <<p.nombre << " | Precio: "<< p.precio <<" | Stock: "<< p.stock <<endl;
+    }
+
+    lista.erase(
+        remove_if(lista.begin(), lista.end(), [](const producto& p){
+            return !p.esValido() || !p.disponible();
+        }),
+        lista.end()
+    );
+
+    cout << "\nProductos válidos y disponibles:\n";
+    for (const auto&p : lista) {
+        cout << "- "<< p.nombre <<" | Precio: " << p.precio <<" | Stock: "<<p.stock <<endl;
+    }
+    cout<<"\n";
+
+    
+    //EJERCICIO 3
+    // Creamos algunos productos originales
+    vector<Prod> productos = {
+        {"Taza del Multiverso", 12.5, 10},
+        {"Llavero Interestelar", 4.5,5},
+        {"Pulsera Cosmica", 7.9, 8},
+        {"Cuaderno Artesanal", 12.5, 25},
+        {"Camisa Galactica", 9.99,15}
+    };
+
+    sort(productos.begin(), productos.end());
+    cout<<"EJERCICIO 3";
+    cout<<"\n";
+    cout << "Productos ordenados (por precio y luego nombre):\n";
+    for (const auto& p : productos){
+        cout << "- " << p.nombre<< " | Precio: $" << p.precio << " | Stock: " << p.stock << endl;
+    }
+
+    Prod buscado("pulsera cosmica");
+    auto it = find(productos.begin(), productos.end(), buscado);
+
+    cout<<"\n Resultado de la búsqueda:\n";
+    if (it != productos.end()) {
+        cout<< "Encontrado: " << it->nombre<< " | Precio: $"<< it->precio <<" | Stock: " << it->stock<<endl;
+    } else{
+        cout << "No se encontró el producto.\n";
+    }
+    cout<<"\n";
+
+
+    //EJERCICIO 4
+    cout<<"EJERCICIO 4";
+    cout<<"\n";
+
+    Polinomio p({1,3,2}); 
+
+    // Mostramos el polinomio
+    p.mostrar();
+
+    // Evaluamos el polinomio en x = 2
+    double valor =p.evaluar(2.0);
+    cout << "P(2) = "<< valor<<endl;
+    cout<<"\n";
+    
+    //EJERCICIO 5
+        vector<Produ>inventario={
+        {"Camisa Galáctica", 9.99,12},
+        {"Pulsera Cósmica", 7.5,5},
+        {"Llavero Interestelar", 4.5,8}
+    };
+
+    int opcion;
+    do{
+        cout<<"EJERCICIO 5";
+        cout<< "\n SISTEMA DE INVENTARIO\n";
+        cout << "1. Mostrar inventario\n";
+        cout<< "2. Agregar producto\n";
+        cout << "3. Buscar producto\n";
+        cout<< "4. Modificar producto\n";
+        cout << "5. Eliminar producto\n";
+        cout<< "0. Salir\n";
+        cout<< "Elige una opción: ";
+        cin >> opcion;
+        cin.ignore(); // limpiar salto de línea
+
+        switch (opcion) {
+            case 1:
+                mostrarInventario(inventario);
+                break;
+            case 2:
+                agregarProdu(inventario);
+                break;
+            case 3:{
+                string nombre;
+                cout <<"\nNombre a buscar: ";
+                getline(cin, nombre);
+                int pos=buscarProdu(inventario,nombre);
+                if (pos != -1)
+                    cout<< "Encontrado: " << inventario[pos].nombre
+                         << " | $" << inventario[pos].precio
+                        << " | Stock:" <<inventario[pos].stock <<endl;
+                else
+                    cout<<"No se encontró el producto.\n";
+                break;
+            }
+            case 4:
+                modificarProdu(inventario);
+                break;
+            case 5:
+                eliminarProdu(inventario);
+                break;
+            case 0:
+                cout <<"Saliendo del sistema...\n";
+                break;
+            default:
+                cout<< "Opción no válida.\n";
+        }
+
+    } while(opcion != 0);
+    cout<<"\n";
+    
+    
+    //EJERCICIO 6 
+    
+      // Creamos dos fracciones
+    Fraccion f1(3,4); // 3/4
+    Fraccion f2(2,5); // 2/5
+
+    cout<<"EJERCICIO 6";
+    cout<<"\n";
+    cout <<"Fracciones iniciales:\n";
+    f1.mostrar();
+    f2.mostrar();
+
+    // Suma
+    Fraccion suma = f1.sumar(f2);
+    cout<<"Suma: ";
+    suma.mostrar();
+
+    // Resta
+    Fraccion resta =f1.restar(f2);
+    cout << "Resta: ";
+    resta.mostrar();
+    cout<<"\n";
+    
+    //EJERCICIO 7
+    
+    vector<Contacto> agenda ={
+        {"Omar Gutierrez", "3184454692", "Omar@gmail.com"},
+        {"Felipe Bernal", "3157356899", "Felipe@gmail.com"}
+    };
+
+    int Opcion;
+    do {
+        cout<<"EJERCICIO 7";
+        cout<< "\n GESTIÓN DE CONTACTOS\n";
+        cout<< "1. Mostrar contactos\n";
+        cout << "2. Agregar contacto\n";
+        cout<< "3. Buscar contacto\n";
+        cout << "4. Eliminar contacto\n";
+        cout<< "0. Salir\n";
+        cout << "Elige una opción: ";
+        cin >> Opcion;
+        cin.ignore(); // limpiar buffer
+
+        switch (Opcion) {
+            case 1:
+                mostrarContactos(agenda);
+                break;
+            case 2:
+                agregarContacto(agenda);
+                break;
+            case 3: {
+                string nombre;
+                cout << "\nNombre a buscar: ";
+                getline(cin, nombre);
+                int pos = buscarContacto(agenda,nombre);
+                if (pos != -1){
+                    const auto&c = agenda[pos];
+                    cout<<"Contacto encontrado: "<<c.nombre
+                        << " | Tel: "<< c.telefono
+                        << " | Correo: "<< c.correo<<endl;
+                } else{
+                    cout<<"Contacto no encontrado.\n";
+                }
+                break;
+            }
+            case 4:
+                eliminarContacto(agenda);
+                break;
+            case 0:
+                cout<<" Saliendo...\n";
+                break;
+            default:
+                cout<<" Opción no válida.\n";
+        }
+    } while (Opcion != 0);
+
+
+    
+
+  
+    
+}
