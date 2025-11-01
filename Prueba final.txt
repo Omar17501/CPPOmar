@@ -1,0 +1,444 @@
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <fstream>
+#include <sstream>
+#include <cstring>
+using namespace std;
+
+// EJERCICIO #1
+// Función para leer el arreglo 
+void leer_arreglo(int *a, size_t n) {
+    for (size_t i = 0; i < n; i++) {
+        cin >> *(a + i);
+    }
+}
+
+// Función para calcular mínimo, máximo y promedio
+void min_max_prom(const int *a, size_t n, int *minv, int *maxv, double *prom) {
+    *minv = *a; 
+    *maxv = *a;
+    long long suma = 0;
+
+    for (size_t i = 0; i < n; i++) {
+        int valor = *(a + i);
+        if (valor < *minv) *minv = valor;
+        if (valor > *maxv) *maxv = valor;
+        suma += valor;
+    }
+
+    *prom = (double)suma / n;
+}
+
+// EJERCICIO #2 
+void reverse(int *b, int i, int j) {
+    while (i < j) {
+        int temp = b[i];
+        b[i] = b[j];
+        b[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+// Función que rota el arreglo 'b' de tamaño 'num' hacia la derecha 'k' veces
+void rotar_derecha(int *b, int num, int k) {
+    if (num == 0) return;
+    k = k % num;
+
+    reverse(b, 0, num - 1);
+    reverse(b, 0, k - 1);
+    reverse(b, k, num - 1);
+}
+
+//EJERCICIO #3 
+// Función que quita espacios extras y los de los extremos
+size_t normalizar_espacios(const char *in, char *out, size_t outcap) {
+    const char *src = in;  // puntero para leer
+    char *dst = out;       // puntero para escribir
+    bool en_espacio = false; // para saber si ya hubo un espacio
+
+    // 1️⃣ Saltar los espacios del inicio
+    while (*src == ' ') {
+        src++;
+    }
+
+    // 2️⃣ Recorrer todos los caracteres
+    while (*src != '\0' && (dst - out) < (int)(outcap - 1)) {
+        if (*src != ' ') {
+            *dst = *src;   // copiamos el carácter
+            dst++;
+            en_espacio = false;
+        } else {
+            // si encontramos un espacio, solo lo copiamos si el anterior no fue espacio
+            if (!en_espacio) {
+                *dst = ' ';
+                dst++;
+                en_espacio = true;
+            }
+        }
+        src++;
+    }
+
+    // 3️⃣ Quitar espacio final si quedó
+    if (dst > out && *(dst - 1) == ' ') {
+        dst--;
+    }
+
+    *dst = '\0';  // cerramos la cadena con el carácter nulo
+
+    // 4️⃣ Devolvemos la longitud
+    return (size_t)(dst - out);
+}
+
+//EJERCICIO #4 
+// Función para crear una matriz dinámica de m x n
+int **mat_crear(size_t m, size_t nu) {
+    int **A = new int*[m];          // arreglo de punteros (filas)
+    for (size_t i = 0; i < m; i++) {
+        A[i] = new int[nu];          // cada fila tiene n columnas
+    }
+    return A;
+}
+
+// Función para liberar la memoria
+void mat_destruir(int **A, size_t m) {
+    for (size_t i = 0; i < m; i++) {
+        delete[] A[i];
+    }
+    delete[] A;
+}
+
+// Función que calcula sumas por filas y columnas
+void mat_sumas(int **A, size_t m, size_t nu, int *sumF, int *sumC) {
+    // Inicializamos las sumas en 0
+    for (size_t i = 0; i < m; i++) sumF[i] = 0;
+    for (size_t j = 0; j < nu; j++) sumC[j] = 0;
+
+    // Recorremos la matriz
+    for (size_t i = 0; i < m; i++) {
+        for (size_t j = 0; j < nu; j++) {
+            sumF[i] += A[i][j];   // sumamos el valor a la fila
+            sumC[j] += A[i][j];   // sumamos el valor a la columna
+        }
+    }
+}
+
+//EJERCICIO #5
+typedef struct {
+    char nombre[40];
+    int edad;
+    double promedio;
+} Estudiante;
+
+// Función para comparar promedios en orden descendente
+int cmp_prom_desc(const void *a, const void *b) {
+    Estudiante *ea = (Estudiante *)a;
+    Estudiante *eb = (Estudiante *)b;
+    if (eb->promedio > ea->promedio) return 1;
+    if (eb->promedio < ea->promedio) return -1;
+    return 0;
+}
+
+// Función para buscar un estudiante por nombre
+int buscar_nombre(Estudiante *v, size_t cant, const char *clave) {
+    for (size_t i = 0; i < cant; i++) {
+        if (strcmp(v[i].nombre, clave) == 0)
+            return i;  // devuelve el índice si encuentra
+    }
+    return -1; // no encontró
+}
+
+//EJERCICIO #6 
+typedef struct Nodo {
+    int x;
+    struct Nodo *sig;
+} Nodo;
+
+void push_front(Nodo **head, int val) {
+    Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
+    if (!nuevo) return;
+    nuevo->x = val;
+    nuevo->sig = *head;
+    *head = nuevo;
+}
+
+void push_back(Nodo **head, int val) {
+    Nodo *nuevo = (Nodo *)malloc(sizeof(Nodo));
+    if (!nuevo) return;
+    nuevo->x = val;
+    nuevo->sig = NULL;
+    if (*head == NULL) {
+        *head = nuevo;
+        return;
+    }
+    Nodo *temp = *head;
+    while (temp->sig != NULL) temp = temp->sig;
+    temp->sig = nuevo;
+}
+
+void pop_front(Nodo **head) {
+    if (*head == NULL) return;
+    Nodo *temp = *head;
+    *head = (*head)->sig;
+    free(temp);
+}
+
+int size(Nodo *head) {
+    int cnt = 0;
+    while (head) { cnt++; head = head->sig; }
+    return cnt;
+}
+
+void clear(Nodo **head) {
+    while (*head) {
+        Nodo *temp = *head;
+        *head = (*head)->sig;
+        free(temp);
+    }
+}
+
+void imprimir(Nodo *head) {
+    while (head) {
+        printf("%d ", head->x);
+        head = head->sig;
+    }
+    printf("\n");
+}
+
+//EJERCICIO #7 
+int doble(int x) {
+    return 2 * x;
+}
+
+int cuadrado(int x) {
+    return x * x;
+}
+
+// Función aplicar: recibe un arreglo y un puntero a función
+void aplicar(int *a, size_t tam, int (*op)(int)) {
+    for (size_t i = 0; i < tam; i++) {
+        a[i] = op(a[i]);
+    }
+}
+
+// Función para imprimir el arreglo
+void imprimir_arreglo(int *a, size_t tam) {
+    cout << "[";
+    for (size_t i = 0; i < tam; i++) {
+        cout << a[i];
+        if (i < tam - 1) cout << ", ";
+    }
+    cout << "]\n";
+}
+
+
+
+
+
+int main() {
+    //EJERCICIO #1 ===========================================================================================================================
+    cout << "EJERCICIO #1\n";
+
+    size_t n;
+    cin >> n;
+
+    int *a = new int[n];
+    leer_arreglo(a, n);
+
+    int minv, maxv;
+    double prom;
+
+    min_max_prom(a, n, &minv, &maxv, &prom);
+
+    cout << "min = " << minv << " max = " << maxv << " prom = ";
+    cout.setf(ios::fixed);
+    cout.precision(2);
+    cout << prom << endl;
+
+    delete[] a; // liberar memoria
+    //EJERCICIO #2 ===================================================================================================================
+    cout << "\nEJERCICIO #2\n";
+
+    int b[] = {17, 23, 35, 42, 59};
+    int num = 5;
+    int k = 2;
+
+    rotar_derecha(b, num, k);
+
+    cout << "[";
+    for (int i = 0; i < num; i++) {
+        cout << b[i];
+        if (i < num - 1) cout << ", ";
+    }
+    cout << "]" << endl;
+
+    cout<<"\n";
+    
+    
+    //EJERCICIO #3 =================================================================================================================================
+    cout<<"EJERCICIO #3";
+    cout<<"\n";
+    
+    const char entrada[] = "   hola  mi    nombre   es      omar   ";
+    char salida[1000];
+
+    // Llamamos a la función
+    size_t longitud = normalizar_espacios(entrada, salida, 1000);
+
+    // Mostramos los resultados
+    cout << "Entrada original: \"" << entrada << "\"" << endl;
+    cout << "Frase normalizada: \"" << salida << "\"" << endl;
+    cout << "Longitud: " << longitud << endl;
+    cout<<"\n";
+    
+    //EJERCICIO #4 ===============================================================================================
+     size_t m = 3;  // filas
+    size_t nu = 4;  // columnas
+
+    // Creamos la matriz
+    int **A = mat_crear(m, n);
+
+    // Llenamos la matriz con valores
+    int valores[3][4] = {
+        {7, 26, 8, 1},
+        {54, 33, 71, 18},
+        {48, 69, 17, 10}
+    };
+
+    for (size_t i = 0; i < m; i++) {
+        for (size_t j = 0; j < nu; j++) {
+            A[i][j] = valores[i][j];
+        }
+    }
+
+    // Arreglos para las sumas
+    int sumF[m];
+    int sumC[nu];
+
+    // Calculamos las sumas
+    mat_sumas(A, m, nu, sumF, sumC);
+
+    // Mostramos resultados
+    cout<<"EJERCICIO #4";
+    cout<<"\n";
+    cout << "sumF: [";
+    for (size_t i = 0; i < m; i++) {
+        cout << sumF[i];
+        if (i < m - 1) cout << ", ";
+    }
+    cout << "]" << endl;
+
+    cout << "sumC: [";
+    for (size_t j = 0; j < nu; j++) {
+        cout << sumC[j];
+        if (j < nu - 1) cout << ", ";
+    }
+    cout << "]" << endl;
+
+    // Liberamos memoria
+    mat_destruir(A, m);
+    
+    //EJERCICIO #5=================================================================================
+    int cant;
+    cout<<"EJERCICIO #5";
+    cout<<"\n";
+    printf("¿Cuántos estudiantes? ");
+    scanf("%d", &cant);
+
+    Estudiante *lista = (Estudiante *)malloc(cant * sizeof(Estudiante));
+
+    // Leer datos
+    for (int i = 0; i < cant; i++) {
+        printf("Nombre del estudiante %d: ", i + 1);
+        scanf(" %[^\n]", lista[i].nombre); // lee hasta el salto de línea
+        printf("Edad: ");
+        scanf("%d", &lista[i].edad);
+        printf("Promedio: ");
+        scanf("%lf", &lista[i].promedio);
+    }
+
+    
+    qsort(lista, cant, sizeof(Estudiante), cmp_prom_desc);
+
+    // Imprime top-3
+    printf("\nTop 3 estudiantes:\n");
+    for (int i = 0; i < cant && i < 3; i++) {
+        printf("%s - %.2lf\n", lista[i].nombre, lista[i].promedio);
+    }
+
+    // Buscar por nombre
+    char nombre_buscar[40];
+    printf("\nNombre a buscar: ");
+    scanf(" %[^\n]", nombre_buscar);
+
+    int pos = buscar_nombre(lista, cant, nombre_buscar);
+    if (pos != -1)
+        printf("%s encontrado en la posición %d\n", nombre_buscar, pos);
+    else
+        printf("%s no encontrado\n", nombre_buscar);
+
+    free(lista);
+    cout<<"\n";
+    
+    //EJERCICIO #6 =============================================================================================================
+    cout << "\nEJERCICIO #6\n";
+    Nodo *lista_entero = NULL;
+    push_front(&lista_entero, 10);
+    push_front(&lista_entero, 5);
+    push_back(&lista_entero, 20);
+    imprimir(lista_entero);
+    printf("Tamaño: %d\n", size(lista_entero));
+    pop_front(&lista_entero);
+    imprimir(lista_entero);
+    clear(&lista_entero);
+    imprimir(lista_entero);
+    cout<<"\n";
+    
+    //EJERCICIO #7 ===========================================================================================================
+    cout<<"EJERCICIO #7";
+    cout<<"\n";
+    
+    size_t tam;
+    cout << "Ingrese el tamaño del arreglo: ";
+    cin >> tam;
+    int *arr = new int[tam];
+
+    cout << "Ingrese los elementos del arreglo:\n";
+    for (size_t i = 0; i < tam; i++) {
+        cin >> arr[i];
+    }
+
+    int opcion;
+    do {
+        cout << "\n--- MENU ---\n";
+        cout << "1. Doblar los elementos\n";
+        cout << "2. Elevar al cuadrado los elementos\n";
+        cout << "3. Mostrar arreglo\n";
+        cout << "0. Salir\n";
+        cout << "Opcion: ";
+        cin >> opcion;
+
+        switch(opcion) {
+            case 1:
+                aplicar(arr, tam, doble);
+                cout << "Arreglo doblado.\n";
+                break;
+            case 2:
+                aplicar(arr, tam, cuadrado);
+                cout << "Arreglo al cuadrado.\n";
+                break;
+            case 3:
+                imprimir_arreglo(arr, tam);
+                break;
+            case 0:
+                cout << "Saliendo\n";
+                break;
+            default:
+                cout << "Opcion invalida.\n";
+        }
+    } while(opcion != 0);
+
+    delete[] arr;
+    cout<<"\n";
